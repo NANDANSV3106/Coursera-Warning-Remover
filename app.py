@@ -53,6 +53,11 @@ def _build_regex(start: str, end: str) -> re.Pattern:
 
 _COMPILED_PATTERNS = [_build_regex(s, e) for s, e in WARNING_PATTERNS]
 
+# Standalone lines to strip: bare question numbering ("1.", "2.", "23.")
+# and point-value labels ("1 point", "2 points", "10 points").
+_QUESTION_NUMBER_RE = re.compile(r"^\d+\.$")
+_POINTS_RE = re.compile(r"^\d+\s*points?$", re.IGNORECASE)
+
 
 def remove_coursera_warnings(text: str):
     """Returns (cleaned_text, number_of_warnings_removed)."""
@@ -65,7 +70,14 @@ def remove_coursera_warnings(text: str):
     cleaned_lines = []
     previous_blank = False
     for line in lines:
-        if line.strip() == "":
+        stripped = line.strip()
+
+        # Drop bare question-numbering lines and point-value labels entirely
+        # (not treated as blank lines, so they don't leave extra gaps).
+        if _QUESTION_NUMBER_RE.match(stripped) or _POINTS_RE.match(stripped):
+            continue
+
+        if stripped == "":
             if not previous_blank:
                 cleaned_lines.append("")
             previous_blank = True
@@ -128,6 +140,16 @@ if "cleaned_text" not in st.session_state:
     st.session_state.cleaned_text = ""
 if "removed_count" not in st.session_state:
     st.session_state.removed_count = None
+if "clear_signal" not in st.session_state:
+    st.session_state.clear_signal = False
+if "input_box" not in st.session_state:
+    st.session_state.input_box = ""
+
+# Handle a pending clear request BEFORE the text_area widget is created below,
+# since a widget's session_state value can't be changed after it's instantiated.
+if st.session_state.clear_signal:
+    st.session_state.input_box = ""
+    st.session_state.clear_signal = False
 
 col1, col2 = st.columns(2, gap="large")
 
@@ -138,6 +160,7 @@ with col1:
         height=380,
         placeholder="Paste your copied Coursera text here…",
         label_visibility="collapsed",
+        key="input_box",
     )
     st.caption(f"{len(input_text.split())} words · {len(input_text)} chars")
 
@@ -161,6 +184,7 @@ with col2:
     if clear_clicked:
         st.session_state.cleaned_text = ""
         st.session_state.removed_count = None
+        st.session_state.clear_signal = True
         st.rerun()
 
     if st.session_state.cleaned_text:

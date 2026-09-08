@@ -1,6 +1,6 @@
-# 🧹 Coursera Question Cleaner — Web
+# 🧹 Coursera Warning Cleaner — Web
 
-A lightweight web application that cleans copied Coursera question and quiz text by removing repeated AI-assistant warning boilerplate — accessible from any browser via a shareable link, no installation required.
+A lightweight web application that cleans copied Coursera Warning and quiz text by removing repeated AI-assistant warning boilerplate — accessible from any browser via a shareable link, no installation required.
 
 This is the web (Streamlit) edition of the original desktop app. It provides the same cleaning logic through a simple browser interface: paste text, remove unwanted warning blocks, review the cleaned result, and copy it with one click.
 
@@ -102,7 +102,7 @@ streamlit run app.py
 
 ### 2. Paste your text
 
-Paste copied Coursera question or quiz text into:
+Paste copied Coursera Warning or quiz text into:
 
 **📥 PASTE COPIED TEXT**
 
@@ -243,9 +243,9 @@ A Tkinter-based desktop edition of this tool is also available, with dark/light 
 
 ## 🎯 Purpose
 
-Coursera content copied into notes or other applications can sometimes contain repeated AI-assistant warning text alongside the actual question.
+Coursera content copied into notes or other applications can sometimes contain repeated AI-assistant warning text alongside the actual Warning.
 
-**Coursera Question Cleaner** provides a quick way to remove that unwanted boilerplate and produce cleaner, more readable text — now accessible to anyone via a simple link.
+**Coursera Warning Cleaner** provides a quick way to remove that unwanted boilerplate and produce cleaner, more readable text — now accessible to anyone via a simple link.
 
 ### Simple. Fast. Shareable. 🧹
 

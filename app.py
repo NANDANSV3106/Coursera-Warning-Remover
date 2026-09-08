@@ -203,7 +203,7 @@ with col2:
             st.caption("No warning boilerplate found — text shown as-is")
 
     if st.session_state.cleaned_text:
-        st.markdown("**🤖 Continue with an AI chat**")
+        st.markdown("**💬 Continue with an AI chat**")
 
         encoded = urllib.parse.quote(st.session_state.cleaned_text)
         chatgpt_url = f"https://chatgpt.com/?q={encoded}"

@@ -1,5 +1,5 @@
 """
-Coursera Question Cleaner — Web (Streamlit) version
+Coursera Question Remover — Web (Streamlit) version
 -----------------------------------------------------
 Removes repeated AI-assistant warning boilerplate that gets copied along
 with quiz/question text from Coursera, so you can save clean notes.
@@ -80,7 +80,7 @@ def remove_coursera_warnings(text: str):
 # Page setup
 # -----------------------------
 
-st.set_page_config(page_title="Coursera Warning Cleaner", page_icon="🧹", layout="wide")
+st.set_page_config(page_title="Coursera Warning Remover", page_icon="🧹", layout="wide")
 
 st.markdown(
     f"""
@@ -121,7 +121,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-st.title("🧹 Coursera Warning Cleaner")
+st.title("🧹 Coursera Warning Remover")
 st.caption("Strip repeated AI-warning boilerplate from copied text.")
 
 if "cleaned_text" not in st.session_state:

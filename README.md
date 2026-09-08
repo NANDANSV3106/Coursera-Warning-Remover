@@ -9,10 +9,10 @@ This is the web (Streamlit) edition of the original desktop app. It provides the
 ## 🌐 Live App
 
 ```text
-https://<your-app-name>.streamlit.app
+https://coursera-cleaner-06.streamlit.app/
 ```
 
-*(Replace with your deployed Streamlit Community Cloud URL once live — see Deployment below.)*
+👉 Click the link above to open the app — no installation needed.
 
 ---
 

@@ -10,6 +10,7 @@ Deploy free:   push this folder to a GitHub repo, then deploy on
 """
 
 import re
+import urllib.parse
 import streamlit as st
 
 LINKEDIN_URL = "https://www.linkedin.com/in/nandansv05/"
@@ -177,10 +178,34 @@ with col2:
         else:
             st.caption("No warning boilerplate found — text shown as-is")
 
+    if st.session_state.cleaned_text:
+        st.markdown("**🤖 Continue with an AI chat**")
+
+        encoded = urllib.parse.quote(st.session_state.cleaned_text)
+        chatgpt_url = f"https://chatgpt.com/?q={encoded}"
+        claude_url = f"https://claude.ai/new?q={encoded}"
+        gemini_url = "https://gemini.google.com/app"
+
+        ac1, ac2, ac3 = st.columns(3)
+        with ac1:
+            st.link_button("Open in ChatGPT", chatgpt_url, use_container_width=True)
+        with ac2:
+            st.link_button("Open in Claude", claude_url, use_container_width=True)
+        with ac3:
+            st.link_button("Open in Gemini", gemini_url, use_container_width=True)
+
+        if len(st.session_state.cleaned_text) > 1500:
+            st.caption(
+                "⚠️ Long text — ChatGPT/Claude links may truncate or fail to prefill. "
+                "Gemini doesn't support prefilling at all yet — use the copy icon above and paste manually."
+            )
+        else:
+            st.caption("Gemini doesn't support link prefilling yet — copy the text above and paste it in manually.")
+
 st.markdown(
     f"""
     <div class="footer">
-        <span>Made by Nandan S V.</span>
+        <span>Made by Nandan S V</span>
         <a class="linkedin-badge" href="{LINKEDIN_URL}" target="_blank">
             <span class="linkedin-icon">in</span> in/nandansv05
         </a>

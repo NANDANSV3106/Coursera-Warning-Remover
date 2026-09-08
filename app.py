@@ -80,7 +80,7 @@ def remove_coursera_warnings(text: str):
 # Page setup
 # -----------------------------
 
-st.set_page_config(page_title="Coursera Question Cleaner", page_icon="🧹", layout="wide")
+st.set_page_config(page_title="Coursera Warning Cleaner", page_icon="🧹", layout="wide")
 
 st.markdown(
     f"""
@@ -121,8 +121,8 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-st.title("🧹 Coursera Question Cleaner")
-st.caption("Strip repeated AI-warning boilerplate from copied questions.")
+st.title("🧹 Coursera Warning Cleaner")
+st.caption("Strip repeated AI-warning boilerplate from copied text.")
 
 if "cleaned_text" not in st.session_state:
     st.session_state.cleaned_text = ""

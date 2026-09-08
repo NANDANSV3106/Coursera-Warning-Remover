@@ -9,7 +9,7 @@ This is the web (Streamlit) edition of the original desktop app. It provides the
 ## 🌐 Live App
 
 ```text
-https://coursera-cleaner-06.streamlit.app/
+https://coursera-warning-remover06.streamlit.app/
 ```
 
 👉 Click the link above to open the app — no installation needed.

@@ -170,21 +170,6 @@ The app compiles these patterns on startup and applies them whenever **Remove Wa
 
 ---
 
-## ☁️ Deployment (Streamlit Community Cloud — Free)
-
-1. Push `app.py` and `requirements.txt` to a **public** GitHub repository.
-2. Go to [share.streamlit.io](https://share.streamlit.io) and sign in with GitHub.
-3. Click **New app**, select the repo and branch, and set the main file path to `app.py`.
-4. Click **Deploy**. After a minute or two, you'll get a public URL like:
-
-   ```text
-   https://coursera-cleaner-yourname.streamlit.app
-   ```
-
-5. Share that link — anyone can open it in a browser and use the tool immediately.
-
----
-
 ## 📐 Project Structure
 
 ```text

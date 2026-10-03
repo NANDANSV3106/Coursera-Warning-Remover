@@ -15,6 +15,8 @@ import streamlit as st
 
 LINKEDIN_URL = "https://www.linkedin.com/in/nandansv05/"
 LINKEDIN_BLUE = "#0A66C2"
+GITHUB_URL = "https://github.com/NANDANSV3106"
+GITHUB_DARK = "#181717"
 
 # -----------------------------
 # Cleaning logic (identical to the desktop version)
@@ -112,16 +114,34 @@ st.markdown(
         font-size: 0.8rem;
         opacity: 0.85;
     }}
-    .linkedin-badge {{
+    .footer-badges {{
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }}
+    .linkedin-badge, .github-badge {{
         display: inline-flex;
         align-items: center;
         gap: 6px;
         text-decoration: none;
         font-weight: 600;
+    }}
+    .linkedin-badge {{
         color: {LINKEDIN_BLUE};
+    }}
+    .github-badge {{
+        color: inherit;
     }}
     .linkedin-icon {{
         background: {LINKEDIN_BLUE};
+        color: white;
+        font-weight: 700;
+        font-size: 0.7rem;
+        padding: 2px 5px;
+        border-radius: 3px;
+    }}
+    .github-icon {{
+        background: {GITHUB_DARK};
         color: white;
         font-weight: 700;
         font-size: 0.7rem;
@@ -230,9 +250,14 @@ st.markdown(
     f"""
     <div class="footer">
         <span>Made by Nandan S V</span>
-        <a class="linkedin-badge" href="{LINKEDIN_URL}" target="_blank">
-            <span class="linkedin-icon">in</span> in/nandansv05
-        </a>
+        <div class="footer-badges">
+            <a class="github-badge" href="{GITHUB_URL}" target="_blank">
+                <span class="github-icon">GH</span> NANDANSV3106
+            </a>
+            <a class="linkedin-badge" href="{LINKEDIN_URL}" target="_blank">
+                <span class="linkedin-icon">in</span> in/nandansv05
+            </a>
+        </div>
     </div>
     """,
     unsafe_allow_html=True,

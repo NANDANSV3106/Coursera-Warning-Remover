@@ -183,7 +183,7 @@ st.markdown(
 )
 
 st.title("🧹 Coursera Warning Remover")
-st.caption("Strip repeated AI-warning boilerplate from copied text.")
+st.caption("Remove AI warnings from copied text.")
 
 if "cleaned_text" not in st.session_state:
     st.session_state.cleaned_text = ""

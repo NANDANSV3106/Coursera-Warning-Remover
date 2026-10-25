@@ -404,6 +404,8 @@ if st.session_state.cleaned_text:
     provider_label = next(iter(PROVIDERS))  # Gemini only
     provider = PROVIDERS[provider_label]
     owner_key = get_secret_key(provider["secret"])
+    if owner_key:
+        st.success("✅ This site has a shared Gemini key — just click **Get answers**. No key needed.")
 
     with st.expander("⚙️ Bot settings", expanded=not owner_key):
         user_key = st.text_input(

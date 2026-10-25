@@ -9,7 +9,7 @@ This is the web (Streamlit) edition of the original desktop app.
 ## 🌐 Live App
 
 ```text
-https://coursera-warning-remover.onrender.com/
+https://coursera-warning-remover.onrender.com
 ```
 
 👉 Click the link above to open the app.

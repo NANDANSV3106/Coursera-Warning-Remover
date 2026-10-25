@@ -1,8 +1,8 @@
-# 🧹 Coursera Warning Cleaner — Web
+# 🧹 Coursera Warning Remover — Web
 
-A lightweight web application that cleans copied Coursera Warning and quiz text by removing repeated AI-assistant warning boilerplate — accessible from any browser via a shareable link, no installation required.
+A lightweight web app that cleans copied Coursera question and quiz text by removing the repeated AI-assistant warning boilerplate, plus question numbers, point labels and "Enter answer here" placeholders. Open it from any browser via a shareable link — no installation required.
 
-This is the web (Streamlit) edition of the original desktop app. It provides the same cleaning logic through a simple browser interface: paste text, remove unwanted warning blocks, review the cleaned result, and copy it with one click.
+This is the web (Streamlit) edition of the original desktop app.
 
 ---
 
@@ -12,123 +12,117 @@ This is the web (Streamlit) edition of the original desktop app. It provides the
 https://coursera-warning-remover.onrender.com/
 ```
 
-👉 Click the link above to open the app — no installation needed.
+👉 Click the link above to open the app.
+
+> Hosted on Render's free tier, so the first visit after a quiet period can take about a minute to wake up.
 
 ---
 
 ## ✨ Features
 
-### 🧹 Remove Warning Boilerplate
+### 🧹 Clean copied text
 
-Automatically detects and removes configured AI-assistant warning blocks from copied text.
+Removes, in one click:
 
-The current cleaner recognizes warning content beginning with:
+- The AI-assistant warning block (from `You are a helpful AI assistant.` to `Do you understand?`)
+- Bare question-number lines (`1.`, `2.`, `23.`)
+- Point labels (`1 point`, `4 points.`)
+- `Enter answer here` placeholders
+- Extra blank lines
 
-```text
-You are a helpful AI assistant.
-```
+Question headings such as `Question 1` and all real question content are kept.
 
-and ending with:
+### 📋 One-click copy
 
-```text
-Do you understand?
-```
+The cleaned output is shown in a code block with a built-in copy icon.
 
-### 📋 One-Click Copy
+### 🗑 Clear
 
-The cleaned output is shown in a code block with a built-in copy icon — click it to copy the result to your clipboard.
+Clears the pasted text, the cleaned text and the bot's answers.
 
-### 🔢 Word & Character Counter
+### 🔢 Word and character counters
 
-The app displays total word and character counts for both the pasted input and the cleaned output.
+Shown for both the pasted input and the cleaned output.
 
-### 💬 Status Feedback
+### 💬 Continue in an AI chat
 
-After cleaning, the app reports:
+Opens the cleaned text in ChatGPT or Claude with the text pre-filled. Gemini doesn't support pre-filled links, so copy and paste manually there. Very long text may be cut off by the browser's URL length limit.
 
-- Number of warning blocks removed
-- No warning boilerplate found (text shown as-is)
+### 🤖 Study Bot
 
-### 📝 Simple Two-Panel Layout
+Get answers with explanations right inside the app.
 
-Side-by-side input and output panels, with a placeholder shown in the input box until you paste something.
+- **Provider:** Gemini (Google), free tier available
+- **Output per question:** the answer, a short reason, and a confidence rating (High / Medium / Low)
+- **Double-check mode:** a second pass re-solves everything and corrects mistakes (marked "(corrected)")
+- **Bring your own key:** paste an API key in **⚙️ Bot settings**; it is used only for your session and is not saved by the app
 
-### 🔗 No Install for Users
+AI answers can be wrong. Verify anything marked Medium or Low, and anything that depends on course material the bot cannot see.
 
-Anyone with the link opens it straight in a browser — nothing to download, no Python setup on their end.
+### 🔗 Footer
+
+Credit line with GitHub and LinkedIn links.
 
 ---
 
 ## 🖥️ How It Works
 
 ```text
-┌──────────────────────────┐
-│   Copy Coursera Text     │
-└────────────┬─────────────┘
-             │
-             ▼
-┌──────────────────────────┐
-│  Paste Into the Web App  │
-└────────────┬─────────────┘
-             │
-             ▼
-┌──────────────────────────┐
-│    Remove Warnings       │
-└────────────┬─────────────┘
-             │
-             ▼
-┌──────────────────────────┐
-│     Cleaned Text         │
-└────────────┬─────────────┘
-             │
-             ▼
-┌──────────────────────────┐
-│  Copy via the Code Block │
-└──────────────────────────┘
+Copy Coursera text
+        │
+        ▼
+Paste into the app
+        │
+        ▼
+🧹 Remove Warnings  ──►  Cleaned text  ──►  📋 Copy
+                              │
+                              ├──►  💬 Open in ChatGPT / Claude
+                              └──►  🤖 Study Bot (Gemini)
 ```
 
 ---
 
 ## 🚀 How to Use
 
-### 1. Open the app
+1. Open the live app (or run it locally, see below).
+2. Paste your copied text into **📥 PASTE COPIED TEXT**.
+3. Click **🧹 Remove Warnings**.
+4. Copy the result with the copy icon in the **✨ CLEANED TEXT** box.
+5. Optional: use **💬 Continue with an AI chat** or the **🤖 Study Bot**.
 
-Visit the deployed link (see [Live App](#-live-app)) — or run it locally:
+### Run locally
 
 ```bash
-pip install streamlit
+pip install -r requirements.txt
 streamlit run app.py
 ```
 
-### 2. Paste your text
+---
 
-Paste copied Coursera Warning or quiz text into:
+## 🔑 Getting an API key for the Study Bot
 
-**📥 PASTE COPIED TEXT**
+The bot uses the **Gemini API** from Google, which has a free (rate-limited) tier and needs no billing details.
 
-### 3. Remove warnings
+1. Go to [aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey) and sign in with Google.
+2. Click **Create API key** and copy it (it starts with `AIza…`).
+3. Paste it into **⚙️ Bot settings** in the app.
 
-Click:
+### Optional: provide a key for all visitors
 
-**🧹 Remove Warnings**
+If you host the app yourself, you can set a key on the server so visitors don't need their own. The app looks for an environment variable named `GEMINI_API_KEY`.
 
-### 4. Review the result
+On **Render**: open your service → **Environment** → **Add Environment Variable** → set the name `GEMINI_API_KEY` and your key → save. Render redeploys automatically.
 
-The cleaned text appears in:
+Notes:
 
-**✨ CLEANED TEXT**
-
-### 5. Copy the result
-
-Click the copy icon in the top-right corner of the cleaned text block.
+- Never put keys in `app.py` or commit them to GitHub.
+- Usage on a shared key is billed to the key owner. Set a spend limit with your provider. The app caps shared-key use at 10 runs per browser session, but refreshing the page resets that count.
 
 ---
 
 ## 🧠 Cleaning Engine
 
-The app uses regular expressions to identify warning blocks.
-
-Warning patterns are defined using a start phrase and an end phrase:
+Warning patterns are defined as a start phrase and an end phrase:
 
 ```python
 WARNING_PATTERNS = [
@@ -136,22 +130,11 @@ WARNING_PATTERNS = [
 ]
 ```
 
-The matching system is designed to handle variations in copied text, including:
+Matching tolerates differences in capitalization, spacing, line breaks and small punctuation variations, so formatting changes from copying don't break it.
 
-- Different capitalization
-- Multiple spaces
-- Irregular whitespace
-- Line breaks
-- Optional whitespace before punctuation
-- Small punctuation variations
+### Adding more warning patterns
 
-This makes the cleaner more tolerant of formatting differences introduced when copying text.
-
----
-
-## ➕ Adding More Warning Patterns
-
-Additional warning patterns can be added to the `WARNING_PATTERNS` list in `app.py`:
+Add more pairs to `WARNING_PATTERNS` in `app.py`:
 
 ```python
 WARNING_PATTERNS = [
@@ -160,44 +143,39 @@ WARNING_PATTERNS = [
 ]
 ```
 
-Each pattern consists of:
+---
 
-```text
-(start phrase, end phrase)
-```
+## ☁️ Deployment (Render)
 
-The app compiles these patterns on startup and applies them whenever **Remove Warnings** is clicked.
+1. Push `app.py` and `requirements.txt` to a GitHub repository.
+2. On [render.com](https://render.com), create a **New → Web Service** and connect the repo.
+3. Set:
+   - **Build Command:** `pip install -r requirements.txt`
+   - **Start Command:** `streamlit run app.py --server.port $PORT --server.address 0.0.0.0`
+4. Deploy. Render gives you a public `onrender.com` URL.
 
 ---
 
 ## 📐 Project Structure
 
 ```text
-coursera-cleaner-web/
-├── app.py             # Streamlit app: cleaning logic + UI
-└── requirements.txt   # Python dependencies (streamlit)
+Coursera-Warning-Remover/
+├── .streamlit/
+│   └── config.toml    # hides developer-only toolbar items from viewers
+├── app.py             # Streamlit app: cleaning logic + UI + study bot
+├── requirements.txt   # streamlit, requests
+└── README.md
 ```
-
----
-
-## 🎨 User Interface
-
-The web app includes:
-
-- Header with title and subtitle
-- Two-column input / output layout
-- Action buttons (Remove Warnings, Clear)
-- Word/character counters
-- Status messages
-- Footer with credit and LinkedIn link
 
 ---
 
 ## 🔒 Privacy
 
-Text cleaning happens entirely within the app's own logic — no external AI service, API key, or database is used to process your pasted text.
-
-Note: unlike the desktop version, this app runs on a remote server (Streamlit Community Cloud), so pasted text is sent over the network to render the page, the same way any web app works. It is not stored or logged by the app itself.
+- **Cleaning** happens inside the app's own code on the server. No AI service is involved.
+- **Study Bot:** when you click **Get answers**, your cleaned text is sent to Google's Gemini API using the API key you supplied. Google notes that free-tier Gemini requests may be used to improve its products.
+- **💬 AI chat buttons** put the cleaned text in a link that opens ChatGPT or Claude in your browser.
+- API keys you type in are used for your session only and are not stored by the app.
+- Like any hosted web app, pasted text travels from your browser to the server to render the page.
 
 ---
 
@@ -206,35 +184,28 @@ Note: unlike the desktop version, this app runs on a remote server (Streamlit Co
 | Technology | Purpose |
 |---|---|
 | **Python** | Application logic |
-| **Streamlit** | Web interface and hosting |
-| **Regular Expressions** | Warning detection and removal |
+| **Streamlit** | Web interface |
+| **Regular expressions** | Warning detection and removal |
+| **Gemini API** | Optional Study Bot |
+| **Render** | Hosting |
 
 ---
 
-## 💻 Requirements
+## 🖥️ Also available: desktop version
 
-- Python 3.x
-- `streamlit` (see `requirements.txt`)
-
-No database, custom backend, or external API is required.
-
----
-
-## 🖥️ Also Available: Desktop Version
-
-A Tkinter-based desktop edition of this tool is also available, with dark/light theming, keyboard shortcuts, and offline use. See the desktop app's own README for details.
+A Tkinter desktop edition with dark/light themes and offline use also exists.
 
 ---
 
 ## 🎯 Purpose
 
-Coursera content copied into notes or other applications can sometimes contain repeated AI-assistant warning text alongside the actual Warning.
+Text copied from Coursera often arrives with repeated AI-assistant warning text, question numbers and point labels mixed in with the actual questions.
 
-**Coursera Warning Cleaner** provides a quick way to remove that unwanted boilerplate and produce cleaner, more readable text — now accessible to anyone via a simple link.
+**Coursera Warning Remover** strips that clutter so you get clean, readable questions for your study notes.
 
 ### Simple. Fast. Shareable. 🧹
 
 ---
 
-**Made by Nandan S V.**
-🔗 [linkedin.com/in/nandansv05](https://www.linkedin.com/in/nandansv05/)
+**Made by Nandan S V**
+🔗 [LinkedIn](https://www.linkedin.com/in/nandansv05/) · 💻 [GitHub](https://github.com/NANDANSV3106)

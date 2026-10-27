@@ -9,7 +9,7 @@ This is the web (Streamlit) edition of the original desktop app.
 ## 🌐 Live App
 
 ```text
-https://coursera-warning-remover.onrender.com
+https://coursera-warning-remover.onrender.com/
 ```
 
 👉 Click the link above to open the app.
@@ -54,6 +54,7 @@ Get answers with explanations right inside the app.
 
 - **Provider:** Gemini (Google), free tier available
 - **Output per question:** the answer, a short reason, and a confidence rating (High / Medium / Low)
+- **Automatic model fallback:** if a Gemini model is retired or out of quota, the app tries the next available one and shows which model answered
 - **Double-check mode:** a second pass re-solves everything and corrects mistakes (marked "(corrected)")
 - **Bring your own key:** paste an API key in **⚙️ Bot settings**; it is used only for your session and is not saved by the app
 

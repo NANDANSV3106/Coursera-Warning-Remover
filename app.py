@@ -128,11 +128,13 @@ PROVIDERS = {
         "placeholder": "AIza…",
         "key_url": "https://aistudio.google.com/app/apikey",
         "models": {
-            "Gemini 2.5 Flash — free": "gemini-2.5-flash",
-            "Gemini 2.5 Flash-Lite — free, faster": "gemini-2.5-flash-lite",
+            "Gemini 3.5 Flash": "gemini-3.5-flash",
+            "Gemini 3.1 Flash-Lite — fastest": "gemini-3.1-flash-lite",
+            "Gemini 3 Flash (preview)": "gemini-3-flash-preview",
         },
     },
 }
+PROVIDERS_BY_ID = {p["id"]: p for p in PROVIDERS.values()}
 MAX_INPUT_CHARS = 20000
 OWNER_KEY_SESSION_LIMIT = 10  # cap when the app owner's key (st.secrets) pays
 
@@ -163,6 +165,10 @@ REVIEW_SYSTEM = (
 
 class BotError(Exception):
     """A user-facing problem calling an AI provider."""
+
+
+class ModelUnavailable(BotError):
+    """The chosen model is retired, not offered on this key, or out of quota."""
 
 
 def get_secret_key(secret_name: str) -> str:
@@ -202,9 +208,9 @@ def _call_gemini(api_key: str, model: str, system: str, user: str) -> str:
         if resp.status_code in (400, 401, 403) and "key" in detail.lower():
             raise BotError("That Gemini API key was rejected. Check it and try again.")
         if resp.status_code == 404:
-            raise BotError("That Gemini model isn't available. Pick another model.")
+            raise ModelUnavailable("That Gemini model isn't available. Pick another model.")
         if resp.status_code == 429:
-            raise BotError("Gemini free-tier rate limit hit. Wait a minute and try again.")
+            raise ModelUnavailable("Gemini free-tier rate limit hit. Wait a minute and try again.")
         raise BotError(f"Gemini API error ({resp.status_code}): {detail or resp.text[:200]}")
 
     try:
@@ -221,13 +227,64 @@ def _call_llm(provider_id: str, api_key: str, model: str, system: str, user: str
     return _call_gemini(api_key, model, system, user)
 
 
-def ask_study_bot(provider_id: str, api_key: str, model: str, questions: str, double_check: bool) -> str:
+def _discover_gemini_models(api_key: str) -> list:
+    """Ask Google which text models this key can use (last-resort fallback)."""
+    try:
+        resp = requests.get(
+            "https://generativelanguage.googleapis.com/v1beta/models",
+            headers={"x-goog-api-key": api_key},
+            params={"pageSize": 200},
+            timeout=30,
+        )
+        items = resp.json().get("models", []) if resp.status_code == 200 else []
+    except (requests.RequestException, ValueError, AttributeError):
+        return []
+    skip = ("image", "tts", "live", "audio", "embed", "robotics", "computer", "omni", "veo", "imagen")
+    found = []
+    for m in items:
+        name = str(m.get("name", "")).replace("models/", "", 1)
+        if (
+            "flash" in name
+            and "generateContent" in m.get("supportedGenerationMethods", [])
+            and not any(k in name for k in skip)
+        ):
+            found.append(name)
+    return sorted(found, reverse=True)
+
+
+def ask_study_bot(provider_id: str, api_key: str, model: str, questions: str, double_check: bool):
+    """Returns (answer_text, model_used). Tries other models if one is unavailable."""
     q_block = f"<questions>\n{questions}\n</questions>"
-    answer = _call_llm(provider_id, api_key, model, SOLVER_SYSTEM, q_block)
-    if not double_check:
-        return answer
-    review_input = f"{q_block}\n\n<draft_answers>\n{answer}\n</draft_answers>"
-    return _call_llm(provider_id, api_key, model, REVIEW_SYSTEM, review_input) or answer
+    tried = []
+    last_error = None
+
+    def solve(candidates):
+        nonlocal last_error
+        for m in candidates:
+            if m in tried:
+                continue
+            tried.append(m)
+            try:
+                return _call_llm(provider_id, api_key, m, SOLVER_SYSTEM, q_block), m
+            except ModelUnavailable as e:
+                last_error = e
+        return None, None
+
+    fallbacks = list(PROVIDERS_BY_ID[provider_id]["models"].values())
+    answer, used = solve([model] + fallbacks)
+    if answer is None:
+        answer, used = solve(_discover_gemini_models(api_key))
+    if answer is None:
+        raise last_error or BotError("No Gemini model is available for this key.")
+
+    if double_check:
+        review_input = f"{q_block}\n\n<draft_answers>\n{answer}\n</draft_answers>"
+        try:
+            reviewed = _call_llm(provider_id, api_key, used, REVIEW_SYSTEM, review_input)
+            return reviewed or answer, used
+        except ModelUnavailable:
+            return answer, used  # keep the first-pass answer if the review pass is rate-limited
+    return answer, used
 
 
 # -----------------------------
@@ -309,6 +366,8 @@ if "clear_signal" not in st.session_state:
     st.session_state.clear_signal = False
 if "bot_answer" not in st.session_state:
     st.session_state.bot_answer = ""
+if "bot_model_used" not in st.session_state:
+    st.session_state.bot_model_used = ""
 if "bot_calls" not in st.session_state:
     st.session_state.bot_calls = 0
 if "input_box" not in st.session_state:
@@ -355,6 +414,7 @@ with col2:
         st.session_state.removed_count = None
         st.session_state.clear_signal = True
         st.session_state.bot_answer = ""
+        st.session_state.bot_model_used = ""
         st.rerun()
 
     if st.session_state.cleaned_text:
@@ -432,16 +492,20 @@ if st.session_state.cleaned_text:
         else:
             try:
                 with st.spinner("Solving and double-checking…" if double_check else "Solving…"):
-                    st.session_state.bot_answer = ask_study_bot(
+                    answer, used_model = ask_study_bot(
                         provider["id"], api_key, provider["models"][model_label],
                         st.session_state.cleaned_text, double_check,
                     )
+                    st.session_state.bot_answer = answer
+                    st.session_state.bot_model_used = used_model
                 st.session_state.bot_calls += 1
             except BotError as e:
                 st.error(str(e))
 
     if st.session_state.bot_answer:
         st.markdown(st.session_state.bot_answer)
+        if st.session_state.bot_model_used:
+            st.caption(f"Answered with {st.session_state.bot_model_used}")
         with st.expander("📋 Copy answers"):
             st.code(st.session_state.bot_answer, language=None)
 

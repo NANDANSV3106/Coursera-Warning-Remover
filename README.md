@@ -170,14 +170,6 @@ Coursera-Warning-Remover/
 
 ---
 
-## 🔒 Privacy
-
-- **Cleaning** happens inside the app's own code on the server. No AI service is involved.
-- **Study Bot:** when you click **Get answers**, your cleaned text is sent to Google's Gemini API using the API key you supplied. Google notes that free-tier Gemini requests may be used to improve its products.
-- **💬 AI chat buttons** put the cleaned text in a link that opens ChatGPT or Claude in your browser.
-- API keys you type in are used for your session only and are not stored by the app.
-- Like any hosted web app, pasted text travels from your browser to the server to render the page.
-
 ---
 
 ## 🛠️ Technologies Used

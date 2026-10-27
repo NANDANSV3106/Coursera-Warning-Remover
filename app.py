@@ -19,7 +19,7 @@ import streamlit as st
 
 LINKEDIN_URL = "https://www.linkedin.com/in/nandansv05/"
 LINKEDIN_BLUE = "#0A66C2"
-GITHUB_URL = "https://github.com/NANDANSV3106"
+GITHUB_URL = "https://gihub.com/NANDANSV3106"
 GITHUB_DARK = "#181717"
 
 # Official GitHub mark (white) embedded as a data URI so it renders as a real logo.

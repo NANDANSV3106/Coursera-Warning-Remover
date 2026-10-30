@@ -38,7 +38,7 @@ The cleaned output is shown in a code block with a built-in copy icon.
 
 ### 🗑 Clear
 
-Clears the pasted text, the cleaned text and the bot's answers.
+Clears both the pasted text and the cleaned text.
 
 ### 🔢 Word and character counters
 
@@ -47,18 +47,6 @@ Shown for both the pasted input and the cleaned output.
 ### 💬 Continue in an AI chat
 
 Opens the cleaned text in ChatGPT or Claude with the text pre-filled. Gemini doesn't support pre-filled links, so copy and paste manually there. Very long text may be cut off by the browser's URL length limit.
-
-### 🤖 Study Bot
-
-Get answers with explanations right inside the app.
-
-- **Provider:** Gemini (Google), free tier available
-- **Output per question:** the answer, a short reason, and a confidence rating (High / Medium / Low)
-- **Automatic model fallback:** if a Gemini model is retired or out of quota, the app tries the next available one and shows which model answered
-- **Double-check mode:** a second pass re-solves everything and corrects mistakes (marked "(corrected)")
-- **Bring your own key:** paste an API key in **⚙️ Bot settings**; it is used only for your session and is not saved by the app
-
-AI answers can be wrong. Verify anything marked Medium or Low, and anything that depends on course material the bot cannot see.
 
 ### 🔗 Footer
 
@@ -77,8 +65,7 @@ Paste into the app
         ▼
 🧹 Remove Warnings  ──►  Cleaned text  ──►  📋 Copy
                               │
-                              ├──►  💬 Open in ChatGPT / Claude
-                              └──►  🤖 Study Bot (Gemini)
+                              └──►  💬 Open in ChatGPT / Claude
 ```
 
 ---
@@ -89,7 +76,7 @@ Paste into the app
 2. Paste your copied text into **📥 PASTE COPIED TEXT**.
 3. Click **🧹 Remove Warnings**.
 4. Copy the result with the copy icon in the **✨ CLEANED TEXT** box.
-5. Optional: use **💬 Continue with an AI chat** or the **🤖 Study Bot**.
+5. Optional: use **💬 Continue with an AI chat** to open it in ChatGPT or Claude.
 
 ### Run locally
 
@@ -97,27 +84,6 @@ Paste into the app
 pip install -r requirements.txt
 streamlit run app.py
 ```
-
----
-
-## 🔑 Getting an API key for the Study Bot
-
-The bot uses the **Gemini API** from Google, which has a free (rate-limited) tier and needs no billing details.
-
-1. Go to [aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey) and sign in with Google.
-2. Click **Create API key** and copy it (it starts with `AIza…`).
-3. Paste it into **⚙️ Bot settings** in the app.
-
-### Optional: provide a key for all visitors
-
-If you host the app yourself, you can set a key on the server so visitors don't need their own. The app looks for an environment variable named `GEMINI_API_KEY`.
-
-On **Render**: open your service → **Environment** → **Add Environment Variable** → set the name `GEMINI_API_KEY` and your key → save. Render redeploys automatically.
-
-Notes:
-
-- Never put keys in `app.py` or commit them to GitHub.
-- Usage on a shared key is billed to the key owner. Set a spend limit with your provider. The app caps shared-key use at 10 runs per browser session, but refreshing the page resets that count.
 
 ---
 
@@ -163,10 +129,18 @@ WARNING_PATTERNS = [
 Coursera-Warning-Remover/
 ├── .streamlit/
 │   └── config.toml    # hides developer-only toolbar items from viewers
-├── app.py             # Streamlit app: cleaning logic + UI + study bot
-├── requirements.txt   # streamlit, requests
+├── app.py             # Streamlit app: cleaning logic + UI
+├── requirements.txt   # streamlit
 └── README.md
 ```
+
+---
+
+## 🔒 Privacy
+
+- Cleaning happens inside the app's own code on the server. No AI service or API key is used.
+- The **💬 AI chat buttons** put the cleaned text in a link that opens ChatGPT or Claude in your browser. Nothing is sent until you click one.
+- Like any hosted web app, pasted text travels from your browser to the server to render the page. The app doesn't store it.
 
 ---
 
@@ -177,7 +151,6 @@ Coursera-Warning-Remover/
 | **Python** | Application logic |
 | **Streamlit** | Web interface |
 | **Regular expressions** | Warning detection and removal |
-| **Gemini API** | Optional Study Bot |
 | **Render** | Hosting |
 
 ---
@@ -199,4 +172,4 @@ Text copied from Coursera often arrives with repeated AI-assistant warning text,
 ---
 
 **Made by Nandan S V**
-🔗 [LinkedIn](https://www.linkedin.com/in/nandansv05/) · 💻 [GitHub](https://github.com/NANDANSV3106/)
+🔗 [LinkedIn](https://www.linkedin.com/in/nandansv05/) · 💻 [GitHub](https://github.com/NANDANSV3106)

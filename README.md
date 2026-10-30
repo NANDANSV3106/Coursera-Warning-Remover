@@ -170,8 +170,6 @@ Coursera-Warning-Remover/
 
 ---
 
----
-
 ## 🛠️ Technologies Used
 
 | Technology | Purpose |
@@ -201,4 +199,4 @@ Text copied from Coursera often arrives with repeated AI-assistant warning text,
 ---
 
 **Made by Nandan S V**
-🔗 [LinkedIn](https://www.linkedin.com/in/nandansv05/) · 💻 [GitHub](https://github.com/NANDANSV3106)
+🔗 [LinkedIn](https://www.linkedin.com/in/nandansv05/) · 💻 [GitHub](https://github.com/NANDANSV3106/)
